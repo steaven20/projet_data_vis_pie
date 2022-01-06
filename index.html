@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>HeadMap.js</title>
+    <!--Framework-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+  </head>
+  <body>
+    <div id="selection_pie">
+      <select id="typeGameSelect_pie" onchange="">
+        <option value="1">all the game</option>
+        <option value="2">in one game</option>
+        <option value="3">in a round</option>
+      </select>
+      <select id="typePlayerSelect_pie" onchange="">
+        <option value="1">player "LaMass"</option>
+        <option value="2">tame T</option>
+        <option value="3">tame CT</option>
+        <option value="4">everone</option>
+      </select>
+      <br />
+      <input
+        id="sliderGameNumber_pie"
+        type="range"
+        value="0"
+        min="0"
+        max="19"
+        step="1"
+      /><br />
+      <span id="GameNumber_pie">Game Number</span>
+      <br />
+      <input
+        id="sliderRoundNumber_pie"
+        type="range"
+        value="1"
+        min="1"
+        max="15"
+        step="1"
+      /><br />
+      <span id="RoundNumber_pie">Round Number</span><br />
+      <button type="button" id="button_pie">draw piemap</button><br />
+    </div>
+    <div id="pie_graphe"></div>
+    <script>
+      //dessiner le pie map
+      function drawPieMap(dataset) {
+        // 图表的宽度和高度
+        // higth and weigth
+        var width = 600;
+        var height = 600;
+
+        //构建一个饼布局并接收数据
+        //creer un pie
+        var pie = d3
+          .pie()
+          .sort(null)
+          .value(function (d) {
+            return d[1];
+          });
+        //recu le data
+        //把数据转换为饼图绘制所需要的数据
+        var piedata = pie(dataset);
+
+        //这里把画布的四分之一作为外部半径，内部半径设为0就是饼图，没错，设置大于0就是圆环图
+        var outerRadius = width / 4;
+        var innerRadius = width / 6;
+
+        var arc = d3.arc().outerRadius(outerRadius).innerRadius(innerRadius);
+        //跟之前一样，创建g组合标签后，把piedata数据绑定至g标签，这里要用到D3的内置颜色，
+        //d3.schemeCategory10选了10种颜色，方便我们随时使用，为饼图的不同区域填色，
+        //不必为想不出好的颜色搭配而烦恼，当然也可以自定义颜色
+        var colors = d3.schemeCategory10;
+        //在path标签中，给d属性赋予数据经过弧生成器处理的值，这样一个没有标注的饼图就完成了
+        var svg = d3
+          .select("#pie_graphe")
+          .append("svg")
+          .attr("width", width)
+          .attr("height", height);
+
+        var arcs = svg
+          .selectAll("g")
+          .data(piedata)
+          .enter()
+          .append("g")
+          .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+        //接下来给饼图加一些标注，以便更好地阅读图形，主要用到弧中心的概念，
+        //如下图，黑点就是每个弧的中心，利用arc.centroid()可以获取弧中心的坐标，
+        //并且这个坐标是相对圆形的相对坐标。有了这个坐标，可以很方便地在每个弧上添加文字标注
+        arcs
+          .append("path")
+          .attr("fill", function (d, i) {
+            return colors[i];
+          })
+          .attr("d", function (d) {
+            return arc(d);
+          });
+        //添加文字
+        arcs
+          .append("text")
+          .attr("transform", function (d, i) {
+            var x = (arc.centroid(d)[0] * 2.8) / 2;
+            var y = (arc.centroid(d)[1] * 2.8) / 2;
+            if (i % 2 == 0) {
+              return "translate(" + x * 1.5 + ", " + y * 1.5 + ")";
+            }
+            return "translate(" + x + ", " + y + ")";
+          })
+          .attr("text-anchor", "middle")
+          .text(function (d) {
+            var percent =
+              (Number(d.value) /
+                d3.sum(dataset, function (d) {
+                  return d[1];
+                })) *
+              100;
+            return d.data[0] + " " + percent.toFixed(1) + "%";
+          });
+        //最后再加一些连线
+        //由于最后几个数据太小，标注文字会重叠到一起，这里做了一个判断处理来错开数据值较小的文字，最后的效果图如下所示
+        arcs
+          .append("line")
+          .attr("stroke", "black")
+          .attr("x1", function (d) {
+            return (arc.centroid(d)[0] * 2) / 2;
+          })
+          .attr("y1", function (d) {
+            return (arc.centroid(d)[1] * 2) / 2;
+          })
+          .attr("x2", function (d, i) {
+            if (i % 2 == 0) {
+              return (arc.centroid(d)[0] * 3.2) / 1.6;
+            }
+            return (arc.centroid(d)[0] * 2.5) / 2;
+          })
+          .attr("y2", function (d, i) {
+            if (i % 2 == 0) {
+              return (arc.centroid(d)[1] * 3.2) / 1.6;
+            }
+            return (arc.centroid(d)[1] * 2.5) / 2;
+          });
+      }
+
+      d3.csv("/src_pie/output.csv").then((d) => {
+        //console.log(d);
+        var data = [];
+        var nombre_variable_non_null = [];
+        for (var i = 0; i < d.length; i++) {
+          //compte les nombres des variable non null
+          var nb_variable_non_null = 0;
+          if (d[i]["shots_hit"] != 0) {
+            nb_variable_non_null++;
+          }
+          if (d[i]["hits_chest"] != 0) {
+            nb_variable_non_null++;
+          }
+          if (d[i]["hits_head"] != 0) {
+            nb_variable_non_null++;
+          }
+          if (d[i]["hits_stomach"] != 0) {
+            nb_variable_non_null++;
+          }
+          if (d[i]["hits_left_arm"] != 0) {
+            nb_variable_non_null++;
+          }
+          if (d[i]["hits_right_arm"] != 0) {
+            nb_variable_non_null++;
+          }
+          if (d[i]["hits_left_leg"] != 0) {
+            nb_variable_non_null++;
+          }
+          if (d[i]["hits_right_leg"] != 0) {
+            nb_variable_non_null++;
+          }
+
+          //prendre les donnes que on veut
+          var point = {
+            Game_number: d[i]["Game_number"],
+            Pseudo: d[i]["Pseudo"],
+            Team: d[i]["Team"],
+            Round_number: d[i]["Round_number"],
+            Shots_fired: d[i]["Shots_fired"],
+            shots_hit: d[i]["shots_hit"],
+            hits_chest: d[i]["hits_chest"],
+            hits_head: d[i]["hits_head"],
+            hits_stomach: d[i]["hits_stomach"],
+            hits_left_arm: d[i]["hits_left_arm"],
+            hits_right_arm: d[i]["hits_right_arm"],
+            hits_left_leg: d[i]["hits_left_leg"],
+            hits_right_leg: d[i]["hits_right_leg"],
+            nombre_vari_non_null: nb_variable_non_null
+          };
+          data.push(point);
+        }
+
+        //obtient valeur de button
+        var typeGameSelect = d3.select("#typeGameSelect_pie").property("value");
+        var typePlayerSelect = d3
+          .select("#typePlayerSelect_pie")
+          .property("value");
+        var roundNumberSelect = d3
+          .select("#sliderRoundNumber_pie")
+          .property("value");
+        var GameNumberSelect = d3
+          .select("#sliderGameNumber_pie")
+          .property("value");
+
+        var head = 0;
+        var chest = 0;
+        var stomach = 0;
+        var left_arm = 0;
+        var right_arm = 0;
+        var left_leg = 0;
+        var right_leg = 0;
+        //"1" pour tous les jeus
+        if (typeGameSelect == 1) {
+          if (typePlayerSelect == 1) {
+            // pour joueur LaMass
+            for (var i = 0; i < data.length; i++) {
+              if (data[i]["Pseudo"] == "LaMasse") {
+                head = parseInt(data[i]["hits_head"]) + head;
+                chest = parseInt(data[i]["hits_chest"]) + chest;
+                stomach = parseInt(data[i]["hits_stomach"]) + stomach;
+                left_arm = parseInt(data[i]["hits_left_arm"]) + left_arm;
+                right_arm = parseInt(data[i]["hits_right_arm"]) + right_arm;
+                left_leg = parseInt(data[i]["hits_left_leg"]) + left_leg;
+                right_leg = parseInt(data[i]["hits_right_leg"]) + right_leg;
+              }
+            }
+          }
+        }
+
+        var dataset = [
+          ["head", head],
+          ["chest", chest],
+          ["stomach", stomach],
+          ["left_arm", left_arm],
+          ["right_arm", right_arm],
+          ["left_leg", left_leg],
+          ["right_leg", right_leg]
+        ];
+
+        drawPieMap(dataset);
+
+        //console.log(data);
+        //console.log(dataset);
+
+        //show round number
+        d3.select("#sliderRoundNumber_pie").on("input", function () {
+          d3.select("#RoundNumber_pie").html(
+            "Round Number : " + " " + this.value
+          );
+        });
+
+        //show Game number
+        d3.select("#sliderGameNumber_pie").on("input", function () {
+          d3.select("#GameNumber_pie").html(
+            "Game Number : " + " " + this.value
+          );
+        });
+      });
+    </script>
+  </body>
+</html>
