@@ -297,7 +297,53 @@
                   right_leg = parseInt(data[i]["hits_right_leg"]) + right_leg;
                 }
               }
+              //pour equipe T
+            } else if (typePlayerSelect == 2) {
+              for (var i = 0; i < data.length; i++) {
+                if (
+                  data[i]["Team"] == "T" &&
+                  data[i]["Game_number"] == GameNumberSelect
+                ) {
+                  head = parseInt(data[i]["hits_head"]) + head;
+                  chest = parseInt(data[i]["hits_chest"]) + chest;
+                  stomach = parseInt(data[i]["hits_stomach"]) + stomach;
+                  left_arm = parseInt(data[i]["hits_left_arm"]) + left_arm;
+                  right_arm = parseInt(data[i]["hits_right_arm"]) + right_arm;
+                  left_leg = parseInt(data[i]["hits_left_leg"]) + left_leg;
+                  right_leg = parseInt(data[i]["hits_right_leg"]) + right_leg;
+                }
+              }
+              //pour equipe CT
+            } else if (typePlayerSelect == 3) {
+              for (var i = 0; i < data.length; i++) {
+                if (
+                  data[i]["Team"] == "CT" &&
+                  data[i]["Game_number"] == GameNumberSelect
+                ) {
+                  head = parseInt(data[i]["hits_head"]) + head;
+                  chest = parseInt(data[i]["hits_chest"]) + chest;
+                  stomach = parseInt(data[i]["hits_stomach"]) + stomach;
+                  left_arm = parseInt(data[i]["hits_left_arm"]) + left_arm;
+                  right_arm = parseInt(data[i]["hits_right_arm"]) + right_arm;
+                  left_leg = parseInt(data[i]["hits_left_leg"]) + left_leg;
+                  right_leg = parseInt(data[i]["hits_right_leg"]) + right_leg;
+                }
+              }
+              //pour tous les joeur
+            } else if (typePlayerSelect == 4) {
+              for (var i = 0; i < data.length; i++) {
+                if (data[i]["Game_number"] == GameNumberSelect) {
+                  head = parseInt(data[i]["hits_head"]) + head;
+                  chest = parseInt(data[i]["hits_chest"]) + chest;
+                  stomach = parseInt(data[i]["hits_stomach"]) + stomach;
+                  left_arm = parseInt(data[i]["hits_left_arm"]) + left_arm;
+                  right_arm = parseInt(data[i]["hits_right_arm"]) + right_arm;
+                  left_leg = parseInt(data[i]["hits_left_leg"]) + left_leg;
+                  right_leg = parseInt(data[i]["hits_right_leg"]) + right_leg;
+                }
+              }
             }
+
             // 3 pour un tour sur un jeu
           } else if (typeGameSelect == 3) {
             // pour joueur LaMass
@@ -305,6 +351,55 @@
               for (var i = 0; i < data.length; i++) {
                 if (
                   data[i]["Pseudo"] == "LaMasse" &&
+                  data[i]["Game_number"] == GameNumberSelect &&
+                  data[i]["Round_number"] == roundNumberSelect
+                ) {
+                  head = parseInt(data[i]["hits_head"]) + head;
+                  chest = parseInt(data[i]["hits_chest"]) + chest;
+                  stomach = parseInt(data[i]["hits_stomach"]) + stomach;
+                  left_arm = parseInt(data[i]["hits_left_arm"]) + left_arm;
+                  right_arm = parseInt(data[i]["hits_right_arm"]) + right_arm;
+                  left_leg = parseInt(data[i]["hits_left_leg"]) + left_leg;
+                  right_leg = parseInt(data[i]["hits_right_leg"]) + right_leg;
+                }
+              }
+            } else if (typePlayerSelect == 2) {
+              for (var i = 0; i < data.length; i++) {
+                if (
+                  data[i]["Team"] == "T" &&
+                  data[i]["Game_number"] == GameNumberSelect &&
+                  data[i]["Round_number"] == roundNumberSelect
+                ) {
+                  head = parseInt(data[i]["hits_head"]) + head;
+                  chest = parseInt(data[i]["hits_chest"]) + chest;
+                  stomach = parseInt(data[i]["hits_stomach"]) + stomach;
+                  left_arm = parseInt(data[i]["hits_left_arm"]) + left_arm;
+                  right_arm = parseInt(data[i]["hits_right_arm"]) + right_arm;
+                  left_leg = parseInt(data[i]["hits_left_leg"]) + left_leg;
+                  right_leg = parseInt(data[i]["hits_right_leg"]) + right_leg;
+                }
+              }
+              //pour equipe CT
+            } else if (typePlayerSelect == 3) {
+              for (var i = 0; i < data.length; i++) {
+                if (
+                  data[i]["Team"] == "CT" &&
+                  data[i]["Game_number"] == GameNumberSelect &&
+                  data[i]["Round_number"] == roundNumberSelect
+                ) {
+                  head = parseInt(data[i]["hits_head"]) + head;
+                  chest = parseInt(data[i]["hits_chest"]) + chest;
+                  stomach = parseInt(data[i]["hits_stomach"]) + stomach;
+                  left_arm = parseInt(data[i]["hits_left_arm"]) + left_arm;
+                  right_arm = parseInt(data[i]["hits_right_arm"]) + right_arm;
+                  left_leg = parseInt(data[i]["hits_left_leg"]) + left_leg;
+                  right_leg = parseInt(data[i]["hits_right_leg"]) + right_leg;
+                }
+              }
+              //pour tous les joeur
+            } else if (typePlayerSelect == 4) {
+              for (var i = 0; i < data.length; i++) {
+                if (
                   data[i]["Game_number"] == GameNumberSelect &&
                   data[i]["Round_number"] == roundNumberSelect
                 ) {
@@ -331,7 +426,7 @@
           ];
           //dessine les donnes
           drawPieMap(dataset);
-          //console.log(dataset);
+          console.log(dataset);
         }
 
         update_pie(data);
