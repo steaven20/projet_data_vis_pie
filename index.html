@@ -18,8 +18,8 @@
       </select>
       <select id="typePlayerSelect_pie" onchange="">
         <option value="1">player "LaMass"</option>
-        <option value="2">tame T</option>
-        <option value="3">tame CT</option>
+        <option value="2">team T</option>
+        <option value="3">team CT</option>
         <option value="4">everone</option>
       </select>
       <br />
@@ -248,6 +248,145 @@
 
         //console.log(data);
         //console.log(dataset);
+
+        function update_pie(data) {
+          //effacer svg
+          var svg = d3.select("#pie_graphe").selectAll("svg").remove();
+          //obtient valeur de button
+          var typeGameSelect = d3
+            .select("#typeGameSelect_pie")
+            .property("value");
+          var typePlayerSelect = d3
+            .select("#typePlayerSelect_pie")
+            .property("value");
+          var roundNumberSelect = d3
+            .select("#sliderRoundNumber_pie")
+            .property("value");
+          var GameNumberSelect = d3
+            .select("#sliderGameNumber_pie")
+            .property("value");
+
+          //ini vari
+          var head = 0;
+          var chest = 0;
+          var stomach = 0;
+          var left_arm = 0;
+          var right_arm = 0;
+          var left_leg = 0;
+          var right_leg = 0;
+
+          //"1" pour tous les jeus
+          if (typeGameSelect == 1) {
+            // pour joueur LaMass
+            if (typePlayerSelect == 1) {
+              for (var i = 0; i < data.length; i++) {
+                if (data[i]["Pseudo"] == "LaMasse") {
+                  head = parseInt(data[i]["hits_head"]) + head;
+                  chest = parseInt(data[i]["hits_chest"]) + chest;
+                  stomach = parseInt(data[i]["hits_stomach"]) + stomach;
+                  left_arm = parseInt(data[i]["hits_left_arm"]) + left_arm;
+                  right_arm = parseInt(data[i]["hits_right_arm"]) + right_arm;
+                  left_leg = parseInt(data[i]["hits_left_leg"]) + left_leg;
+                  right_leg = parseInt(data[i]["hits_right_leg"]) + right_leg;
+                }
+              }
+              //pour equipe T
+            } else if (typePlayerSelect == 2) {
+              for (var i = 0; i < data.length; i++) {
+                if (data[i]["Team"] == "T") {
+                  head = parseInt(data[i]["hits_head"]) + head;
+                  chest = parseInt(data[i]["hits_chest"]) + chest;
+                  stomach = parseInt(data[i]["hits_stomach"]) + stomach;
+                  left_arm = parseInt(data[i]["hits_left_arm"]) + left_arm;
+                  right_arm = parseInt(data[i]["hits_right_arm"]) + right_arm;
+                  left_leg = parseInt(data[i]["hits_left_leg"]) + left_leg;
+                  right_leg = parseInt(data[i]["hits_right_leg"]) + right_leg;
+                }
+              }
+              //pour equipe CT
+            } else if (typePlayerSelect == 3) {
+              for (var i = 0; i < data.length; i++) {
+                if (data[i]["Team"] == "CT") {
+                  head = parseInt(data[i]["hits_head"]) + head;
+                  chest = parseInt(data[i]["hits_chest"]) + chest;
+                  stomach = parseInt(data[i]["hits_stomach"]) + stomach;
+                  left_arm = parseInt(data[i]["hits_left_arm"]) + left_arm;
+                  right_arm = parseInt(data[i]["hits_right_arm"]) + right_arm;
+                  left_leg = parseInt(data[i]["hits_left_leg"]) + left_leg;
+                  right_leg = parseInt(data[i]["hits_right_leg"]) + right_leg;
+                }
+              }
+              //pour tous les joeur
+            } else if (typePlayerSelect == 4) {
+              for (var i = 0; i < data.length; i++) {
+                head = parseInt(data[i]["hits_head"]) + head;
+                chest = parseInt(data[i]["hits_chest"]) + chest;
+                stomach = parseInt(data[i]["hits_stomach"]) + stomach;
+                left_arm = parseInt(data[i]["hits_left_arm"]) + left_arm;
+                right_arm = parseInt(data[i]["hits_right_arm"]) + right_arm;
+                left_leg = parseInt(data[i]["hits_left_leg"]) + left_leg;
+                right_leg = parseInt(data[i]["hits_right_leg"]) + right_leg;
+              }
+            }
+            //2 pour un jeu
+          } else if (typeGameSelect == 2) {
+            // pour joueur LaMass
+            if (typePlayerSelect == 1) {
+              for (var i = 0; i < data.length; i++) {
+                if (
+                  data[i]["Pseudo"] == "LaMasse" &&
+                  data[i]["Game_number"] == GameNumberSelect
+                ) {
+                  head = parseInt(data[i]["hits_head"]) + head;
+                  chest = parseInt(data[i]["hits_chest"]) + chest;
+                  stomach = parseInt(data[i]["hits_stomach"]) + stomach;
+                  left_arm = parseInt(data[i]["hits_left_arm"]) + left_arm;
+                  right_arm = parseInt(data[i]["hits_right_arm"]) + right_arm;
+                  left_leg = parseInt(data[i]["hits_left_leg"]) + left_leg;
+                  right_leg = parseInt(data[i]["hits_right_leg"]) + right_leg;
+                }
+              }
+            }
+            // 3 pour un tour sur un jeu
+          } else if (typeGameSelect == 3) {
+            // pour joueur LaMass
+            if (typePlayerSelect == 1) {
+              for (var i = 0; i < data.length; i++) {
+                if (
+                  data[i]["Pseudo"] == "LaMasse" &&
+                  data[i]["Game_number"] == GameNumberSelect &&
+                  data[i]["Round_number"] == roundNumberSelect
+                ) {
+                  head = parseInt(data[i]["hits_head"]) + head;
+                  chest = parseInt(data[i]["hits_chest"]) + chest;
+                  stomach = parseInt(data[i]["hits_stomach"]) + stomach;
+                  left_arm = parseInt(data[i]["hits_left_arm"]) + left_arm;
+                  right_arm = parseInt(data[i]["hits_right_arm"]) + right_arm;
+                  left_leg = parseInt(data[i]["hits_left_leg"]) + left_leg;
+                  right_leg = parseInt(data[i]["hits_right_leg"]) + right_leg;
+                }
+              }
+            }
+          }
+          //obtient donnes de dataset
+          var dataset = [
+            ["head", head],
+            ["chest", chest],
+            ["stomach", stomach],
+            ["left_arm", left_arm],
+            ["right_arm", right_arm],
+            ["left_leg", left_leg],
+            ["right_leg", right_leg]
+          ];
+          //dessine les donnes
+          drawPieMap(dataset);
+          console.log(dataset);
+        }
+
+        d3.select("#button_pie").on("click", function () {
+          update_pie(data);
+          //console.log(this.value);
+        });
 
         //show round number
         d3.select("#sliderRoundNumber_pie").on("input", function () {
