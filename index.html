@@ -197,55 +197,6 @@
           data.push(point);
         }
 
-        //obtient valeur de button
-        var typeGameSelect = d3.select("#typeGameSelect_pie").property("value");
-        var typePlayerSelect = d3
-          .select("#typePlayerSelect_pie")
-          .property("value");
-        var roundNumberSelect = d3
-          .select("#sliderRoundNumber_pie")
-          .property("value");
-        var GameNumberSelect = d3
-          .select("#sliderGameNumber_pie")
-          .property("value");
-
-        var head = 0;
-        var chest = 0;
-        var stomach = 0;
-        var left_arm = 0;
-        var right_arm = 0;
-        var left_leg = 0;
-        var right_leg = 0;
-        //"1" pour tous les jeus
-        if (typeGameSelect == 1) {
-          if (typePlayerSelect == 1) {
-            // pour joueur LaMass
-            for (var i = 0; i < data.length; i++) {
-              if (data[i]["Pseudo"] == "LaMasse") {
-                head = parseInt(data[i]["hits_head"]) + head;
-                chest = parseInt(data[i]["hits_chest"]) + chest;
-                stomach = parseInt(data[i]["hits_stomach"]) + stomach;
-                left_arm = parseInt(data[i]["hits_left_arm"]) + left_arm;
-                right_arm = parseInt(data[i]["hits_right_arm"]) + right_arm;
-                left_leg = parseInt(data[i]["hits_left_leg"]) + left_leg;
-                right_leg = parseInt(data[i]["hits_right_leg"]) + right_leg;
-              }
-            }
-          }
-        }
-
-        var dataset = [
-          ["head", head],
-          ["chest", chest],
-          ["stomach", stomach],
-          ["left_arm", left_arm],
-          ["right_arm", right_arm],
-          ["left_leg", left_leg],
-          ["right_leg", right_leg]
-        ];
-
-        drawPieMap(dataset);
-
         //console.log(data);
         //console.log(dataset);
 
@@ -380,8 +331,10 @@
           ];
           //dessine les donnes
           drawPieMap(dataset);
-          console.log(dataset);
+          //console.log(dataset);
         }
+
+        update_pie(data);
 
         d3.select("#button_pie").on("click", function () {
           update_pie(data);
