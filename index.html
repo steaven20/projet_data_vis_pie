@@ -144,6 +144,15 @@
             return (arc.centroid(d)[1] * 2.5) / 2;
           });
       }
+      //dessiner hit dans corp
+      function draw_body(dataset) {
+        var img = d3
+          .select("#body_graphe")
+          .append("svg:image")
+          .attr("width", 500)
+          .attr("height", 500)
+          .attr("xlink:href", "src_pie/riptide.png");
+      }
 
       d3.csv("/src_pie/output.csv").then((d) => {
         //console.log(d);
@@ -426,7 +435,8 @@
           ];
           //dessine les donnes
           drawPieMap(dataset);
-          console.log(dataset);
+          //console.log(dataset);
+          draw_body(dataset);
         }
 
         update_pie(data);
